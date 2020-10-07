@@ -1,7 +1,0 @@
-{
-    "files.associations": {
-        "random": "cpp",
-        "cmath": "cpp"
-    }
-	"C_Cpp.clang_format_fallbackStyle": "WebKit"
-}
