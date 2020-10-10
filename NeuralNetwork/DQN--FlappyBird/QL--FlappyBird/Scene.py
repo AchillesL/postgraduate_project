@@ -1,4 +1,5 @@
-class Res:
+# 场景类，包括用到的图片，音乐等等
+class Scene:
     def __init__(self, pygame):
         self.birdImgs = (
             pygame.image.load('res/image/redbird-upflap.png').convert_alpha(),
@@ -18,9 +19,9 @@ class Res:
             pygame.image.load('res/image/9.png').convert_alpha()
         )
         self.base = pygame.image.load('res/image/base.png').convert_alpha()
-        self.pipes = (
-            pygame.image.load('res/image/pipe-green.png').convert_alpha(),
-            pygame.transform.flip(pygame.image.load('res/image/pipe-green.png').convert_alpha(), False, True)
+        self.pipeImg = (
+            pygame.transform.flip(pygame.image.load('res/image/pipe-green.png').convert_alpha(), False, True),
+            pygame.image.load('res/image/pipe-green.png').convert_alpha()
         )
         self.background = pygame.image.load('res/image/background-day.png').convert_alpha()
         self.Sounds = {
