@@ -6,6 +6,7 @@ class Bird:
     BIRD_MIN_VEL_Y = 1
     BIRD_MAX_VEL_Y = 10
 
+    BIRD_BEGIN = 'begin'
     BIRD_RUNNING = 'running'
     BIRD_DIE = 'die'
 
@@ -15,6 +16,8 @@ class Bird:
         self.posX = pos_x
         self.posY = pos_y
         self.birdImg = bird_img
+        self.birdImgWidth = bird_img[0].get_width()
+        self.birdImgHeight = bird_img[0].get_height()
 
     def getIcon(self):
         return self.birdImg[0]
