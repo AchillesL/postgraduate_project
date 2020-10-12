@@ -5,8 +5,8 @@
 
 using namespace std;
 
-string imgPath = "C:/Users/ZXX-PC/Desktop/lena-8位.bmp";
-string saveImgPath = "C:/Users/ZXX-PC/Desktop/lena-8位-save.bmp";
+string imgPath = "C:/Users/ZXX-PC/Desktop/lena-单色位.bmp";
+string saveImgPath = "C:/Users/ZXX-PC/Desktop/lena-24位-save.bmp";
 
 typedef struct {
 	BITMAPFILEHEADER bf;
@@ -72,8 +72,7 @@ ImgInfo readBitmap(string imgPath) {
 
 		p = buf;
 
-		int index = 0;
-		int offsetBytes = 4 - (imgInfo.bi.biWidth * imgInfo.bi.biBitCount / 8) % 4;
+		int offsetBytes = 4 * ((imgInfo.bi.biWidth * imgInfo.bi.biBitCount + 31) / 32) - imgInfo.bi.biWidth;
 
 		//存储位图数据
 		for (int y = 0; y < imgInfo.bi.biHeight; y++) {
@@ -88,7 +87,6 @@ ImgInfo readBitmap(string imgPath) {
 				if (x == imgInfo.bi.biWidth - 1) {
 					for (int i = 0; i < offsetBytes; i++) p++;
 				}
-				index++;
 			}
 		}
 
@@ -164,7 +162,7 @@ void saveBitmap(ImgInfo imgInfo) {
 				fwrite(&imgInfo.imgPalette[i][j], 1, 1, fpw);
 			}
 		}
-		int offsetBytes = 4 - int(imgInfo.bi.biWidth * imgInfo.bi.biBitCount / 8) % 4;
+		int offsetBytes = (imgInfo.bi.biWidth * imgInfo.bi.biBitCount / 8 + 3) / 4 * 4 - imgInfo.bi.biWidth;
 		//写入像素在调色板中的索引值
 		for (int j = 0; j < imgInfo.imgPaletteIndexList.size(); j++) {
 			fwrite(&imgInfo.imgPaletteIndexList[j], 1, 1, fpw);
@@ -175,6 +173,7 @@ void saveBitmap(ImgInfo imgInfo) {
 			}
 		}
 	}
+	//保存24位图像，直接写入像素的BGR值
 	else if (imgInfo.bi.biBitCount == 24) {
 		int size = imgInfo.bi.biWidth * imgInfo.bi.biHeight;
 		for (int i = 0; i < size; i++) {

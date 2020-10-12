@@ -1,0 +1,4 @@
+git status 中文文件名乱码：
+
+①git config --global core.quotepath false
+②option -> Text -> zh_CN -> UTF-8

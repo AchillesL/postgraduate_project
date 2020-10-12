@@ -1,0 +1,52 @@
+	if (imgInfo.bi.biBitCount == 1) {
+		int headerSize = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
+		fseek(fp, headerSize, 0);
+
+		int paletteSize = imgInfo.bf.bfOffBits - headerSize;				//计算调色板占用字节数			
+		buf = (unsigned char*)malloc(paletteSize);
+		fread(buf, 1, paletteSize, fp);
+
+		p = buf;
+		int paletteNum = paletteSize / 4;
+
+		//将
+		for (int i = 0; i < paletteNum; i++) {
+			vector<unsigned char> bgr(4);
+			bgr[0] = (*(p++));
+			bgr[1] = (*(p++));
+			bgr[2] = (*(p++));
+			bgr[3] = (*(p++));
+
+			imgInfo.imgPalette.push_back(bgr);
+		}
+
+		fseek(fp, imgInfo.bf.bfOffBits, 0);
+		buf = (unsigned char*)malloc(imgInfo.bi.biSizeImage);
+		fread(buf, 1, imgInfo.bi.biSizeImage, fp);
+
+		p = buf;
+
+		int index = 0;
+		int offsetBytes = 4 - (imgInfo.bi.biWidth * imgInfo.bi.biBitCount / 8) % 4;
+		int row_length = 4 * ((imgInfo.bi.biWidth * imgInfo.bi.biBitCount + 31) / 32);
+
+		for (int i = 0; i < imgInfo.bi.biHeight; i++) {
+			for (int j = 0; j < row_length; j++) {
+				unsigned char ch = *(p++);
+				if (j< row_length - offsetBytes) {
+					for (int i = 7; i >= 0; i--) {
+						imgInfo.imgData.push_back(imgInfo.imgPalette.at((ch >> i) & 1));
+					}
+				}
+				else {
+					for (int i = imgInfo.bi.biWidth % 8 -1 ; i >= 0; i--) {
+						imgInfo.imgData.push_back(imgInfo.imgPalette.at((ch >> i) & 1));
+					}
+					break;
+				}
+			}
+		}
+
+		fclose(fp);
+		return imgInfo;
+	}
